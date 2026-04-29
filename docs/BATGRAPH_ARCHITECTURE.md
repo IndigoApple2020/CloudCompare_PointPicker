@@ -73,19 +73,18 @@ Stage 4 │ Graph Building           → Draw edges between nodes
         │  / Graph Editor]
         │
 Stage 5 │ Node Assignment          → Assign names to unlabelled nodes
-        │ [BatGraph: Node Stepper]    🔲 Planned (variant of Stage 3 for
-        │                               scratch-built graphs)
+        │ [BatGraph: Node Stepper]    ✅ Built
         │
 Stage 6 │ Edge Metrics             → Auto-compute distance, slope, bearing
-        │ [BatGraph: Distance &       🔲 Planned
+        │ [BatGraph: Distance &       ✅ Built
         │  Slope Calculator]
         │
 Stage 7 │ Metadata Entry           → Add steps, handrail, opening hours
-        │ [BatGraph: Metadata         🔲 Planned
+        │ [BatGraph: Metadata         ✅ Built
         │  Stepper]
         │
 Stage 8 │ Graph Review             → View, inspect, validate graph
-        │ [BatGraph: Graph Viewer]    🔲 Planned
+        │ [BatGraph: Graph Viewer]    🔲 Planned — next priority
         │
 Stage 9 │ TfL Enrichment           → ATCO codes, journey times,
         │ (Python scripts)            accessibility, lift IDs
@@ -98,7 +97,7 @@ Stage 11│ GTFS-Pathways Check      → Validate output against standard
         │ (Python script — to build)  gtfs_compliance_report.txt
 ```
 
-**Current state:** Stage 3 (F1) is fully built — all four implementation phases merged to `master`. Stage 2 (F2 Merge All Visible) is in progress. Stages 4–8 are done externally in Graph Commons and Python scripts. The development roadmap (Section 4) describes how each is being brought into BatGraph.
+**Current state:** Stages 2–3 and supporting tools are built (F1–F2, F5–F7 all merged to `master`). Stages 4–8 graph visualisation and creation are still done externally in Graph Commons and Python scripts. F8 (Graph Viewer) and F4 (Graph Creator/Editor) are the next major milestones. The development roadmap (Section 4) describes each feature in detail.
 
 ---
 
@@ -131,16 +130,14 @@ This section describes each new feature to be built into the CloudCompare_PointP
 
 ---
 
-### F2 — Merge All Visible Clouds 🔨 In Progress
+### F2 — Merge All Visible Clouds ✅ Built
 
-**Status:** `Edit → Merge` (select-then-merge) is already available in CloudCompare core. The new *"Merge all visible"* one-click action is being added in branch `feature/f2-merge-all-visible`.
-
-**What it does:** A single toolbar/menu action that:
+**What it does:** A single toolbar/menu action (`Edit → Merge All Visible`) that:
 1. Collects all visible, enabled `ccPointCloud` entities from the DB tree automatically
 2. Selects them in the DB tree
 3. Delegates to the existing `doActionMerge()` — no new merge logic
 
-**Why:** Operators typically load 10–20 individual scan files per station. Without this, each cloud must be Ctrl-clicked manually before merging. This removes that friction entirely.
+**Why:** Operators typically load 10–20 individual scan files per station. Without this, each cloud must be Ctrl-clicked manually before merging.
 
 **Key files:** `qCC/mainwindow.cpp`, `qCC/mainwindow.h`, `qCC/ui_templates/mainWindow.ui`
 
@@ -212,7 +209,7 @@ When triggered by right-clicking a node:
 
 ---
 
-### F5 — Node Stepper 🔨 In Progress
+### F5 — Node Stepper ✅ Built
 
 **Replaces:** Manual labelling workflow when building a graph from scratch (Graph Creator output)
 
@@ -237,7 +234,7 @@ In both modes the 3D view pans and zooms to keep the current node centred, and t
 
 ---
 
-### F6 — Distance & Slope Calculator 🔲 Planned
+### F6 — Distance & Slope Calculator ✅ Built
 
 **Replaces:** Python edge metrics script (currently ad-hoc, produces `edge_metrics_<stn>.csv`)
 
@@ -261,7 +258,7 @@ In both modes the 3D view pans and zooms to keep the current node centred, and t
 
 ---
 
-### F7 — Metadata Stepper 🔲 Planned
+### F7 — Metadata Stepper ✅ Built
 
 **Replaces:** Manual spreadsheet editing in `3_StepsInfo/`
 
@@ -702,9 +699,9 @@ flowchart TB
     subgraph BatGraph["BatGraph (CloudCompare_PointPicker)"]
         F1["F1 Node Name Labeller ✅\nPick nodes on cloud\nAssign names from list"]
         F4["F4 Graph Creator / Editor 🔲\nDraw & edit edges on 3D cloud"]
-        F5["F5 Node Stepper 🔲\nAssign names to unlabelled nodes"]
-        F6["F6 Distance & Slope Calc 🔲\nAuto-compute metrics per edge"]
-        F7["F7 Metadata Stepper 🔲\nFill steps, handrail, hours"]
+        F5["F5 Node Stepper ✅\nAssign names to unlabelled nodes"]
+        F6["F6 Distance & Slope Calc ✅\nAuto-compute metrics per edge"]
+        F7["F7 Metadata Stepper ✅\nFill steps, handrail, hours"]
         F8["F8 Graph Viewer 🔲\nVisualise graph on 3D cloud"]
     end
 
