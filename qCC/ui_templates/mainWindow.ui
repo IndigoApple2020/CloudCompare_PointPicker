@@ -535,6 +535,7 @@
     <addaction name="actionNodeStepper"/>
     <addaction name="actionComputeEdgeMetrics"/>
     <addaction name="actionMetadataStepper"/>
+    <addaction name="actionGraphPanel"/>
     <addaction name="actionTracePolyline"/>
     <addaction name="separator"/>
     <addaction name="menuSandBox"/>
@@ -729,6 +730,7 @@ QTreeView::branch:open:has-children:has-siblings  {
    <addaction name="actionNodeStepper"/>
    <addaction name="actionComputeEdgeMetrics"/>
    <addaction name="actionMetadataStepper"/>
+   <addaction name="actionGraphPanel"/>
    <addaction name="actionTracePolyline"/>
    <addaction name="actionClone"/>
    <addaction name="actionMerge"/>
@@ -2063,6 +2065,18 @@ QTreeView::branch:open:has-children:has-siblings  {
    </property>
    <property name="statusTip">
     <string>BatGraph F7 — step through edges and fill in metadata (steps, handrail, hours, status)</string>
+   </property>
+  </action>
+  <action name="actionGraphPanel">
+   <property name="icon">
+    <iconset resource="../icons.qrc">
+     <normaloff>:/CC/images/ccPointListPicking.png</normaloff>:/CC/images/ccPointListPicking.png</iconset>
+   </property>
+   <property name="text">
+    <string>Graph Panel (F8)</string>
+   </property>
+   <property name="statusTip">
+    <string>BatGraph F8 — view force-directed graph of nodes and edges</string>
    </property>
   </action>
   <action name="actionCurvature">

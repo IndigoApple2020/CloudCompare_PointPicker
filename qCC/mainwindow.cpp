@@ -104,6 +104,7 @@
 #include "ccMatchScalesDlg.h"
 #include "ccNoiseFilterDlg.h"
 #include "ccEdgeMetrics.h"
+#include "ccGraphPanelDlg.h"
 #include "ccMetadataStepperDlg.h"
 #include "ccOrderChoiceDlg.h"
 #include "ccPlaneEditDlg.h"
@@ -150,6 +151,7 @@
 
 // Qt
 #include <QClipboard>
+#include <QPointer>
 
 // Qt UI files
 #include <ui_distanceMapDlg.h>
@@ -706,6 +708,7 @@ void MainWindow::connectActions()
 	connect(m_UI->actionNodeStepper, &QAction::triggered, this, &MainWindow::doActionNodeStepper);
 	connect(m_UI->actionComputeEdgeMetrics, &QAction::triggered, this, &MainWindow::doActionComputeEdgeMetrics);
 	connect(m_UI->actionMetadataStepper, &QAction::triggered, this, &MainWindow::doActionMetadataStepper);
+	connect(m_UI->actionGraphPanel,     &QAction::triggered, this, &MainWindow::doActionGraphPanel);
 	connect(m_UI->actionPointPicking, &QAction::triggered, this, &MainWindow::activatePointPickingMode);
 
 	//"Tools > Sand box (research)" menu
@@ -7272,6 +7275,20 @@ void MainWindow::doActionMetadataStepper()
 	dlg->show();
 }
 
+void MainWindow::doActionGraphPanel()
+{
+	// Graph Panel is a persistent window — reuse if already open
+	static QPointer<ccGraphPanelDlg> s_graphPanel;
+	if (!s_graphPanel)
+	{
+		s_graphPanel = new ccGraphPanelDlg(this);
+		s_graphPanel->setAttribute(Qt::WA_DeleteOnClose);
+	}
+	s_graphPanel->show();
+	s_graphPanel->raise();
+	s_graphPanel->activateWindow();
+}
+
 void MainWindow::activatePointPickingMode()
 {
 	ccGLWindowInterface* win = getActiveGLWindow();
@@ -11901,6 +11918,7 @@ void MainWindow::enableUIItems(dbTreeSelectionInfo& selInfo)
 	m_UI->actionNodeStepper->setEnabled(true); // file picker — always available
 	m_UI->actionComputeEdgeMetrics->setEnabled(true); // file picker — always available
 	m_UI->actionMetadataStepper->setEnabled(true); // file picker — always available
+	m_UI->actionGraphPanel->setEnabled(true);       // file picker — always available
 
 	// == 2
 	bool exactlyTwoEntities = (selInfo.selCount == 2);
@@ -12638,6 +12656,7 @@ void MainWindow::populateActionList()
 	m_actions.push_back(m_UI->actionNodeStepper);
 	m_actions.push_back(m_UI->actionComputeEdgeMetrics);
 	m_actions.push_back(m_UI->actionMetadataStepper);
+	m_actions.push_back(m_UI->actionGraphPanel);
 	m_actions.push_back(m_UI->actionLock_rotation_about_arbitrary_axis);
 	m_actions.push_back(m_UI->actionSamplePointsOnPolyline);
 	m_actions.push_back(m_UI->actionNoTranslation);

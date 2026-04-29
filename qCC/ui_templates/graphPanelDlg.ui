@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>GraphPanelDlg</class>
+ <widget class="QDialog" name="GraphPanelDlg">
+  <property name="geometry">
+   <rect><x>0</x><y>0</y><width>1100</width><height>700</height></rect>
+  </property>
+  <property name="windowTitle">
+   <string>Graph Panel — BatGraph F8</string>
+  </property>
+  <layout class="QVBoxLayout" name="mainLayout" stretch="0,1,0">
+
+   <!-- Toolbar row -->
+   <item>
+    <layout class="QHBoxLayout" name="toolbarLayout">
+     <item>
+      <widget class="QPushButton" name="loadNodesButton">
+       <property name="text"><string>Load nodes CSV…</string></property>
+       <property name="toolTip"><string>Load a nodes CSV file (label, x, y, z, [NodeType, ...])</string></property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="loadEdgesButton">
+       <property name="text"><string>Load edges CSV…</string></property>
+       <property name="toolTip"><string>Load an edges CSV file (FromNode, ToNode, EdgeType, ...)</string></property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QFrame" name="sep1">
+       <property name="frameShape"><enum>QFrame::VLine</enum></property>
+       <property name="frameShadow"><enum>QFrame::Sunken</enum></property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="relayoutButton">
+       <property name="text"><string>Re-layout</string></property>
+       <property name="toolTip"><string>Re-run force-directed layout</string></property>
+       <property name="enabled"><bool>false</bool></property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="fitButton">
+       <property name="text"><string>Fit view</string></property>
+       <property name="toolTip"><string>Fit entire graph in view</string></property>
+       <property name="enabled"><bool>false</bool></property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QFrame" name="sep2">
+       <property name="frameShape"><enum>QFrame::VLine</enum></property>
+       <property name="frameShadow"><enum>QFrame::Sunken</enum></property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="statusLabel">
+       <property name="text"><string>No graph loaded</string></property>
+       <property name="alignment"><set>Qt::AlignLeft|Qt::AlignVCenter</set></property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="toolbarSpacer">
+       <property name="orientation"><enum>Qt::Horizontal</enum></property>
+       <property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+
+   <!-- Main area: graph canvas + inspector -->
+   <item>
+    <widget class="QSplitter" name="mainSplitter">
+     <property name="orientation"><enum>Qt::Horizontal</enum></property>
+     <property name="childrenCollapsible"><bool>false</bool></property>
+
+     <!-- Graph canvas placeholder — GraphView added programmatically -->
+     <widget class="QWidget" name="graphContainer">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>3</horstretch><verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+     </widget>
+
+     <!-- Inspector panel -->
+     <widget class="QGroupBox" name="inspectorGroup">
+      <property name="title"><string>Inspector</string></property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+        <horstretch>1</horstretch><verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumWidth"><number>220</number></property>
+      <layout class="QVBoxLayout" name="inspectorLayout">
+       <item>
+        <widget class="QLabel" name="inspectorTitleLabel">
+         <property name="text"><string><i>Click a node or edge</i></string></property>
+         <property name="wordWrap"><bool>true</bool></property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPlainTextEdit" name="inspectorText">
+         <property name="readOnly"><bool>true</bool></property>
+         <property name="placeholderText"><string>Attributes appear here</string></property>
+         <property name="font">
+          <font><family>Courier New</family><pointsize>8</pointsize></font>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+
+    </widget>
+   </item>
+
+   <!-- Status bar row -->
+   <item>
+    <layout class="QHBoxLayout" name="bottomLayout">
+     <item>
+      <widget class="QLabel" name="nodeCountLabel">
+       <property name="text"><string>Nodes: 0</string></property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="edgeCountLabel">
+       <property name="text"><string>Edges: 0</string></property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="unlabelledCountLabel">
+       <property name="text"><string></string></property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="bottomSpacer">
+       <property name="orientation"><enum>Qt::Horizontal</enum></property>
+       <property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="closeButton">
+       <property name="text"><string>Close</string></property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
