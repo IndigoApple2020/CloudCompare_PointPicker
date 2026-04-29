@@ -163,12 +163,9 @@ This section describes each new feature to be built into the CloudCompare_PointP
 
 ---
 
-### F4 — Graph Creator / Editor 🔲 Planned
+### F4 — Graph Creator / Editor 🔲 Merged into F8
 
-**Replaces:** Graph Commons (edge creation and editing)
-
-**What it does:**
-Loads an existing graph (or starts one from scratch) overlaid on the 3D point cloud. The operator builds and edits the graph directly in the 3D view using a gesture-based interaction model — no mode-switching toolbar required.
+**Note:** The editing capability originally scoped here has been folded into F8 (Graph Panel). See F8 for the full interaction model and delivery plan. A separate F4 entry is retained only for traceability.
 
 #### Interaction model
 
@@ -279,17 +276,68 @@ In both modes the 3D view pans and zooms to keep the current node centred, and t
 
 ---
 
-### F8 — Graph Viewer 🔲 Planned
+### F8 — Graph Panel (Viewer + Editor) 🔲 Planned — next priority
 
-**Replaces:** Graph Commons (visualisation)
+**Replaces:** Graph Commons (both visualisation and editing)
 
-**What it does:**
-- Loads `nodes.csv` + `edges.csv` and renders the graph as a 3D overlay on the point cloud
-- Nodes shown as coloured spheres sized by type
-- Edges shown as coloured lines by edge type (see F4 colour scheme)
-- Click a node or edge to inspect its attributes in a panel
-- Pan, zoom, rotate in the same 3D view as the cloud
-- Toggle visibility of node/edge types independently
+**Scope clarification:** This is a **2D graph panel** docked inside BatGraph — not a 3D overlay on the point cloud. The panel sits alongside the 3D cloud view and shows the graph as a 2D network diagram, similar to the Graph Commons view shown below.
+
+Because nodes carry real x/y/z coordinates from the point cloud picks, the panel projects them top-down (x/y) to produce a spatially accurate plan of the station. No manual layout required — the geometry drives the positions.
+
+#### Display
+
+- Nodes shown as coloured circles by type (matching Graph Commons colour scheme):
+
+| NodeType | Colour |
+|----------|--------|
+| `PlatformExit` | Black |
+| `Con` | Grey |
+| `Base` | Grey |
+| `Top` | Purple |
+| `TrainFront` | Green |
+| `JourneyPatternLink` | Orange |
+| `TrainRear` | Brown |
+| `Exit` | Yellow |
+
+- Edges shown as coloured lines by type with label:
+
+| EdgeType | Colour |
+|----------|--------|
+| `Path` | Cyan |
+| `Elev` / `STAIRS` | Red |
+| `Float0` | Grey dashed |
+| `JPL` | Blue |
+| `TempEdge` | Red dashed |
+
+- **Unlabelled node indicator:** nodes whose name has not yet been assigned (i.e. name is empty or matches the default `Point #N` pattern) are shown with a **hollow outlined circle** rather than a filled one — making gaps immediately visible at a glance
+- Node labels shown alongside each node
+- Edge type labels shown on each edge (as in Graph Commons)
+- Pan and zoom within the panel
+
+#### Editing (F4 merged in)
+
+The same panel handles graph editing — no separate mode required:
+
+| Gesture | Action |
+|---------|--------|
+| **Scroll wheel** | Zoom in / out |
+| **Left click + drag** on canvas | Pan |
+| **Left click + drag** on node | Move node |
+| **Double-click** node or edge | Open metadata modal (F7) |
+| **Right-click** node (no drag) | Begin edge — *Edge Drawing Mode* |
+| **Double-click** target node (drawing mode) | Complete edge; prompt for type |
+| **Click** empty space (drawing mode) | Place new unnamed node + connect |
+| **Enter** | Confirm edge |
+| **Esc** | Cancel edge |
+| **Delete** with selection | Remove node or edge |
+
+#### Implementation approach
+
+Built using Qt's `QGraphicsView` + `QGraphicsScene` framework, with custom `QGraphicsItem` subclasses for nodes and edges. Docked as a panel within the main BatGraph window.
+
+**Planned delivery as two sub-PRs:**
+- **Phase 1 (F8a):** Read-only viewer — load, project, colour code, unlabelled markers, pan/zoom
+- **Phase 2 (F8b):** Editing — drag nodes, draw edges, delete, metadata modal
 
 ---
 
@@ -702,7 +750,7 @@ flowchart TB
         F5["F5 Node Stepper ✅\nAssign names to unlabelled nodes"]
         F6["F6 Distance & Slope Calc ✅\nAuto-compute metrics per edge"]
         F7["F7 Metadata Stepper ✅\nFill steps, handrail, hours"]
-        F8["F8 Graph Viewer 🔲\nVisualise graph on 3D cloud"]
+        F8["F8 Graph Panel 🔲\n2D viewer + editor\nReplaces Graph Commons"]
     end
 
     subgraph Interim["Interim External Tools (being retired)"]
