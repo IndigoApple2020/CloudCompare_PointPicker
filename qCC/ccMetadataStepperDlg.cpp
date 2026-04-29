@@ -89,7 +89,7 @@ ccMetadataStepperDlg::ccMetadataStepperDlg(QWidget* parent)
 	connect(nextButton, &QPushButton::clicked, this, &ccMetadataStepperDlg::onNext);
 	connect(prevButton, &QPushButton::clicked, this, &ccMetadataStepperDlg::onPrev);
 	connect(closeButton, &QPushButton::clicked, this, &QDialog::accept);
-	connect(skipCompleteCheckBox, &QCheckBox::stateChanged, this, &ccMetadataStepperDlg::onSkipCompleteChanged);
+	connect(skipCompleteCheckBox, &QCheckBox::checkStateChanged, this, &ccMetadataStepperDlg::onSkipCompleteChanged);
 }
 
 bool ccMetadataStepperDlg::loadEdges(const QString& csvPath)
@@ -337,7 +337,7 @@ void ccMetadataStepperDlg::onPrev()
 	updateDisplay();
 }
 
-void ccMetadataStepperDlg::onSkipCompleteChanged(int /*state*/)
+void ccMetadataStepperDlg::onSkipCompleteChanged(Qt::CheckState /*state*/)
 {
 	if (m_current >= 0 && !isVisible(m_current))
 	{

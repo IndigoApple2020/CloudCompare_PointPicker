@@ -39,13 +39,7 @@ class ccMetadataStepperDlg : public QDialog, public Ui::MetadataStepperDlg
 	/** Returns false if the file cannot be parsed. **/
 	bool loadEdges(const QString& csvPath);
 
-  private slots:
-	void onApplyNext();
-	void onNext();
-	void onPrev();
-	void onSkipCompleteChanged(int state);
-
-  private:
+	//! Internal row representation (public so free helper functions in the .cpp can name it)
 	struct EdgeRow
 	{
 		QStringList cols; // raw CSV values, one per column
@@ -66,6 +60,13 @@ class ccMetadataStepperDlg : public QDialog, public Ui::MetadataStepperDlg
 		bool isComplete(int stepsUpIdx, int hoursIdx, int statusIdx) const;
 	};
 
+  private slots:
+	void onApplyNext();
+	void onNext();
+	void onPrev();
+	void onSkipCompleteChanged(Qt::CheckState state);
+
+  private:
 	void applyCurrentToRow(EdgeRow& row) const;
 	void populateFromRow(const EdgeRow& row);
 	void updateDisplay();
