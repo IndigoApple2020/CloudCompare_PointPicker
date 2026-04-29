@@ -280,9 +280,11 @@ In both modes the 3D view pans and zooms to keep the current node centred, and t
 
 **Replaces:** Graph Commons (both visualisation and editing)
 
-**Scope clarification:** This is a **2D graph panel** docked inside BatGraph — not a 3D overlay on the point cloud. The panel sits alongside the 3D cloud view and shows the graph as a 2D network diagram, similar to the Graph Commons view shown below.
+**Scope:** A **2D graph panel** docked inside BatGraph — not a 3D overlay on the point cloud. The panel sits alongside the 3D cloud view and shows the graph as a 2D network diagram, similar to Graph Commons.
 
-Because nodes carry real x/y/z coordinates from the point cloud picks, the panel projects them top-down (x/y) to produce a spatially accurate plan of the station. No manual layout required — the geometry drives the positions.
+**Layout:** Force-directed (Fruchterman-Reingold algorithm), the same approach used by Graph Commons. Real x/y/z coordinates are *not* used for 2D layout — a top-down projection is unreadable because many nodes (Base, Con, Top, PlatformExit) stack directly above each other at the same x/y. Force-directed spacing separates connected nodes automatically and produces a legible diagram regardless of depth.
+
+**Future toggle:** A "3D skeleton" view (real coordinates, 3D projection, rotatable) can be added later as a second mode — but the force-directed 2D view is the primary working view.
 
 #### Display
 
