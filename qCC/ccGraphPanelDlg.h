@@ -32,9 +32,9 @@
 #include <QWheelEvent>
 
 //! 2-D force-directed graph panel (BatGraph F8)
-/** Loads nodes and edges from CSV files, applies Fruchterman-Reingold layout,
-    and renders the result in a pannable/zoomable QGraphicsView.
-    Selecting a node or edge shows its attributes in the inspector panel.
+/** F8a: read-only viewer with Fruchterman-Reingold layout.
+    F8b: adds edit mode — drag nodes, draw edges, add/delete elements,
+         save changes back to the originating CSV files.
  **/
 class ccGraphPanelDlg : public QDialog, public Ui::GraphPanelDlg
 {
@@ -43,19 +43,41 @@ class ccGraphPanelDlg : public QDialog, public Ui::GraphPanelDlg
   public:
 	explicit ccGraphPanelDlg(QWidget* parent = nullptr);
 
-	//! Reload previously loaded files (e.g. called after external edit)
+	//! Reload previously loaded files
 	void reload();
 
-	//! Show node attributes in inspector (called by NodeItem on click)
+	// ---- Called by interactive scene items ----
 	void showNodeInspector(int nodeIdx);
-	//! Show edge attributes in inspector (called by EdgeItem on click)
 	void showEdgeInspector(int edgeIdx);
+	//! Begin drawing an edge from nodeIdx (edit mode, right-click on node)
+	void startEdgeFrom(int nodeIdx);
+	//! Complete edge to nodeIdx (edit mode, click on target node while drawing)
+	void completeEdgeTo(int toIdx);
+	//! Cancel in-progress edge draw
+	void cancelEdgeDraw();
+	//! Delete node by index
+	void deleteNode(int nodeIdx);
+	//! Delete edge by index
+	void deleteEdge(int edgeIdx);
+	//! Add a new node at the given scene position (edit mode, click on empty canvas)
+	void addNodeAt(const QPointF& scenePos);
+	//! Update rubber-band edge endpoint during edge-drawing
+	void updateRubberEdge(const QPointF& scenePos);
+	//! Sync a node's position after a drag (called by NodeItem on mouse release)
+	void syncNodePosition(int nodeIdx, const QPointF& scenePos);
+	//! Change edge type via dialog (called by EdgeItem context menu)
+	void changeEdgeType(int edgeIdx);
+
+	bool isEditMode()    const { return m_editMode; }
+	bool isDrawingEdge() const { return m_drawingEdge; }
 
   private slots:
 	void onLoadNodes();
 	void onLoadEdges();
 	void onRelayout();
 	void onFitView();
+	void onToggleEditMode(bool checked);
+	void onSaveGraph();
 
   private:
 	// ------------------------------------------------------------------ //
@@ -64,24 +86,22 @@ class ccGraphPanelDlg : public QDialog, public Ui::GraphPanelDlg
 
 	struct GraphNode
 	{
-		QString             label;
-		QString             nodeType; // derived or from CSV
-		QMap<QString, QString> attrs; // all columns
-		double              x = 0.0; // layout position
-		double              y = 0.0;
-		// Graphics item (owned by scene)
-		QGraphicsEllipseItem* item  = nullptr;
-		QGraphicsItem*        label_item = nullptr;
+		QString                label;
+		QString                nodeType;
+		QMap<QString, QString> attrs;
+		double                 x = 0.0;
+		double                 y = 0.0;
+		QGraphicsEllipseItem*  item       = nullptr;
+		QGraphicsItem*         label_item = nullptr;
 	};
 
 	struct GraphEdge
 	{
-		QString             fromLabel;
-		QString             toLabel;
-		QString             edgeType;
+		QString                fromLabel;
+		QString                toLabel;
+		QString                edgeType;
 		QMap<QString, QString> attrs;
-		// Graphics item (owned by scene)
-		QGraphicsLineItem*  item = nullptr;
+		QGraphicsLineItem*     item = nullptr;
 	};
 
 	// ------------------------------------------------------------------ //
@@ -92,16 +112,25 @@ class ccGraphPanelDlg : public QDialog, public Ui::GraphPanelDlg
 	bool loadEdgesCsv(const QString& path);
 
 	void rebuildScene();
+	void rebuildSceneItemsOnly(); // recreate graphics without re-running layout
 	void runFruchtermanReingold();
 	void createNodeItems();
 	void createEdgeItems();
 	void updateStatusLabels();
+	void markDirty();
 
-	// Colour helpers
-	static QColor nodeColour(const QString& nodeType);
-	static QColor edgeColour(const QString& edgeType);
-	static bool   isUnlabelled(const QString& label);
+	// Edit helpers (internal — no dirty/status update)
+	void deleteEdgeInternal(int edgeIdx);
+
+	// Colour helpers (static)
+	static QColor  nodeColour(const QString& nodeType);
+	static QColor  edgeColour(const QString& edgeType);
+	static bool    isUnlabelled(const QString& label);
 	static QString deriveNodeType(const QString& label, const QString& csvNodeType);
+
+	// CSV write-back
+	void saveNodesCsv() const;
+	void saveEdgesCsv() const;
 
 	// ------------------------------------------------------------------ //
 	//  Members                                                             //
@@ -115,8 +144,14 @@ class ccGraphPanelDlg : public QDialog, public Ui::GraphPanelDlg
 
 	QVector<GraphNode> m_nodes;
 	QVector<GraphEdge> m_edges;
-	// Maps label -> index in m_nodes for quick lookup
-	QMap<QString, int> m_nodeIndex;
+	QMap<QString, int> m_nodeIndex; // label → index
+
+	// Edit state
+	bool               m_editMode    = false;
+	bool               m_drawingEdge = false;
+	int                m_edgeSrcIdx  = -1;
+	QGraphicsLineItem* m_rubberEdge  = nullptr;
+	bool               m_dirty       = false;
 };
 
 #endif

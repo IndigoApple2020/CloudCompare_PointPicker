@@ -52,6 +52,27 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="editModeButton">
+       <property name="text"><string>Edit mode</string></property>
+       <property name="toolTip"><string>Toggle edit mode: drag nodes, draw edges, add/delete elements</string></property>
+       <property name="checkable"><bool>true</bool></property>
+       <property name="enabled"><bool>false</bool></property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="saveGraphButton">
+       <property name="text"><string>Save graph</string></property>
+       <property name="toolTip"><string>Save current nodes and edges back to their CSV files</string></property>
+       <property name="enabled"><bool>false</bool></property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QFrame" name="sep3">
+       <property name="frameShape"><enum>QFrame::VLine</enum></property>
+       <property name="frameShadow"><enum>QFrame::Sunken</enum></property>
+      </widget>
+     </item>
+     <item>
       <widget class="QLabel" name="statusLabel">
        <property name="text"><string>No graph loaded</string></property>
        <property name="alignment"><set>Qt::AlignLeft|Qt::AlignVCenter</set></property>
@@ -72,7 +93,6 @@
      <property name="orientation"><enum>Qt::Horizontal</enum></property>
      <property name="childrenCollapsible"><bool>false</bool></property>
 
-     <!-- Graph canvas placeholder — GraphView added programmatically -->
      <widget class="QWidget" name="graphContainer">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -81,7 +101,6 @@
       </property>
      </widget>
 
-     <!-- Inspector panel -->
      <widget class="QGroupBox" name="inspectorGroup">
       <property name="title"><string>Inspector</string></property>
       <property name="sizePolicy">
@@ -104,6 +123,13 @@
          <property name="font">
           <font><family>Courier New</family><pointsize>8</pointsize></font>
          </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="editHintLabel">
+         <property name="text"><string></string></property>
+         <property name="wordWrap"><bool>true</bool></property>
+         <property name="alignment"><set>Qt::AlignLeft|Qt::AlignTop</set></property>
         </widget>
        </item>
       </layout>
