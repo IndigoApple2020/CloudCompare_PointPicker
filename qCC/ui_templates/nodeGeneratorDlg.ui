@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>NodeGeneratorDlg</class>
+ <widget class="QDialog" name="NodeGeneratorDlg">
+  <property name="geometry">
+   <rect><x>0</x><y>0</y><width>520</width><height>560</height></rect>
+  </property>
+  <property name="windowTitle">
+   <string>Node Generator — BatGraph F3</string>
+  </property>
+  <layout class="QVBoxLayout" name="mainLayout">
+
+   <!-- Station source -->
+   <item>
+    <widget class="QGroupBox" name="sourceGroup">
+     <property name="title"><string>Station data source</string></property>
+     <layout class="QVBoxLayout">
+      <item>
+       <layout class="QHBoxLayout">
+        <item>
+         <widget class="QLabel"><property name="text"><string>Station stops CSV:</string></property></widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="csvPathEdit">
+          <property name="placeholderText"><string>Station_Stops_By_Line.csv (optional)</string></property>
+          <property name="readOnly"><bool>true</bool></property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="browseButton">
+          <property name="text"><string>Browse…</string></property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QLabel" name="csvStatusLabel">
+        <property name="text"><string><i>Or fill in manually below</i></string></property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+
+   <!-- Station identity -->
+   <item>
+    <widget class="QGroupBox" name="identityGroup">
+     <property name="title"><string>Station identity</string></property>
+     <layout class="QFormLayout" name="identityForm">
+      <item row="0" column="0">
+       <widget class="QLabel"><property name="text"><string>Station code (3-letter):</string></property></widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="stationCodeEdit">
+        <property name="placeholderText"><string>e.g. CHL</string></property>
+        <property name="maxLength"><number>10</number></property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel"><property name="text"><string>Line code:</string></property></widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QComboBox" name="lineComboBox">
+        <item><property name="text"><string>Cen</string></property></item>
+        <item><property name="text"><string>Ntn</string></property></item>
+        <item><property name="text"><string>Vic</string></property></item>
+        <item><property name="text"><string>Bak</string></property></item>
+        <item><property name="text"><string>Dist</string></property></item>
+        <item><property name="text"><string>Met</string></property></item>
+        <item><property name="text"><string>Jub</string></property></item>
+        <item><property name="text"><string>Pic</string></property></item>
+        <item><property name="text"><string>Cir</string></property></item>
+        <item><property name="text"><string>Ham</string></property></item>
+        <item><property name="text"><string>Wat</string></property></item>
+        <item><property name="text"><string>Eli</string></property></item>
+        <item><property name="text"><string>Ove</string></property></item>
+        <item><property name="text"><string>Dlr</string></property></item>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel"><property name="text"><string>Direction:</string></property></widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QComboBox" name="directionComboBox">
+        <item><property name="text"><string>N</string></property></item>
+        <item><property name="text"><string>S</string></property></item>
+        <item><property name="text"><string>E</string></property></item>
+        <item><property name="text"><string>W</string></property></item>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+
+   <!-- Platform topology -->
+   <item>
+    <widget class="QGroupBox" name="platformGroup">
+     <property name="title"><string>Platform topology</string></property>
+     <layout class="QFormLayout" name="platformForm">
+      <item row="0" column="0">
+       <widget class="QLabel"><property name="text"><string>Platform exits (comma-separated):</string></property></widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="exitsEdit">
+        <property name="placeholderText"><string>e.g. A,B,C,D</string></property>
+        <property name="toolTip"><string>One letter per staircase/exit from the platform</string></property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel"><property name="text"><string>Underground levels:</string></property></widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QSpinBox" name="levelsSpinBox">
+        <property name="minimum"><number>1</number></property>
+        <property name="maximum"><number>8</number></property>
+        <property name="value"><number>2</number></property>
+        <property name="toolTip"><string>Number of underground levels (1 = platform at level 1, street at 0)</string></property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel"><property name="text"><string>Has booking hall:</string></property></widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QCheckBox" name="bookingHallCheck">
+        <property name="checked"><bool>true</bool></property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel"><property name="text"><string>Has street exits:</string></property></widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QCheckBox" name="streetExitsCheck">
+        <property name="checked"><bool>true</bool></property>
+        <property name="toolTip"><string>Add a StreetExit leaf node at ground level per exit</string></property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+
+   <!-- Preview -->
+   <item>
+    <widget class="QGroupBox" name="previewGroup">
+     <property name="title"><string>Preview (nodes to be generated)</string></property>
+     <layout class="QVBoxLayout">
+      <item>
+       <widget class="QPlainTextEdit" name="previewText">
+        <property name="readOnly"><bool>true</bool></property>
+        <property name="font"><font><family>Courier New</family><pointsize>8</pointsize></font></property>
+        <property name="maximumHeight"><number>120</number></property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+
+   <!-- Output -->
+   <item>
+    <widget class="QGroupBox" name="outputGroup">
+     <property name="title"><string>Output</string></property>
+     <layout class="QHBoxLayout">
+      <item>
+       <widget class="QLabel"><property name="text"><string>Output folder:</string></property></widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="outputFolderEdit">
+        <property name="readOnly"><bool>true</bool></property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="outputBrowseButton">
+        <property name="text"><string>Browse…</string></property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+
+   <!-- Buttons -->
+   <item>
+    <layout class="QHBoxLayout" name="buttonLayout">
+     <item>
+      <widget class="QPushButton" name="previewButton">
+       <property name="text"><string>Preview</string></property>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation"><enum>Qt::Horizontal</enum></property>
+       <property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="generateButton">
+       <property name="text"><string>Generate CSVs</string></property>
+       <property name="default"><bool>true</bool></property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="closeButton">
+       <property name="text"><string>Close</string></property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

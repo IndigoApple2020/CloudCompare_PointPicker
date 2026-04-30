@@ -105,6 +105,7 @@
 #include "ccNoiseFilterDlg.h"
 #include "ccEdgeMetrics.h"
 #include "ccMetadataStepperDlg.h"
+#include "ccNodeGeneratorDlg.h"
 #include "ccOrderChoiceDlg.h"
 #include "ccPlaneEditDlg.h"
 #include "ccNodeStepperDlg.h"
@@ -706,6 +707,7 @@ void MainWindow::connectActions()
 	connect(m_UI->actionNodeStepper, &QAction::triggered, this, &MainWindow::doActionNodeStepper);
 	connect(m_UI->actionComputeEdgeMetrics, &QAction::triggered, this, &MainWindow::doActionComputeEdgeMetrics);
 	connect(m_UI->actionMetadataStepper, &QAction::triggered, this, &MainWindow::doActionMetadataStepper);
+	connect(m_UI->actionNodeGenerator,  &QAction::triggered, this, &MainWindow::doActionNodeGenerator);
 	connect(m_UI->actionPointPicking, &QAction::triggered, this, &MainWindow::activatePointPickingMode);
 
 	//"Tools > Sand box (research)" menu
@@ -7272,6 +7274,13 @@ void MainWindow::doActionMetadataStepper()
 	dlg->show();
 }
 
+void MainWindow::doActionNodeGenerator()
+{
+	auto* dlg = new ccNodeGeneratorDlg(this);
+	dlg->setAttribute(Qt::WA_DeleteOnClose);
+	dlg->show();
+}
+
 void MainWindow::activatePointPickingMode()
 {
 	ccGLWindowInterface* win = getActiveGLWindow();
@@ -11901,6 +11910,7 @@ void MainWindow::enableUIItems(dbTreeSelectionInfo& selInfo)
 	m_UI->actionNodeStepper->setEnabled(true); // file picker — always available
 	m_UI->actionComputeEdgeMetrics->setEnabled(true); // file picker — always available
 	m_UI->actionMetadataStepper->setEnabled(true); // file picker — always available
+	m_UI->actionNodeGenerator->setEnabled(true);   // no file required — always available
 
 	// == 2
 	bool exactlyTwoEntities = (selInfo.selCount == 2);
@@ -12638,6 +12648,7 @@ void MainWindow::populateActionList()
 	m_actions.push_back(m_UI->actionNodeStepper);
 	m_actions.push_back(m_UI->actionComputeEdgeMetrics);
 	m_actions.push_back(m_UI->actionMetadataStepper);
+	m_actions.push_back(m_UI->actionNodeGenerator);
 	m_actions.push_back(m_UI->actionLock_rotation_about_arbitrary_axis);
 	m_actions.push_back(m_UI->actionSamplePointsOnPolyline);
 	m_actions.push_back(m_UI->actionNoTranslation);

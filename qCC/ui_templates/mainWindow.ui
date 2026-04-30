@@ -532,6 +532,7 @@
     <addaction name="actionPointPicking"/>
     <addaction name="actionPointListPicking"/>
     <addaction name="actionPointListPickingAllClouds"/>
+    <addaction name="actionNodeGenerator"/>
     <addaction name="actionNodeStepper"/>
     <addaction name="actionComputeEdgeMetrics"/>
     <addaction name="actionMetadataStepper"/>
@@ -726,6 +727,7 @@ QTreeView::branch:open:has-children:has-siblings  {
    <addaction name="separator"/>
    <addaction name="actionPointPicking"/>
    <addaction name="actionPointListPicking"/>
+   <addaction name="actionNodeGenerator"/>
    <addaction name="actionNodeStepper"/>
    <addaction name="actionComputeEdgeMetrics"/>
    <addaction name="actionMetadataStepper"/>
@@ -2063,6 +2065,18 @@ QTreeView::branch:open:has-children:has-siblings  {
    </property>
    <property name="statusTip">
     <string>BatGraph F7 — step through edges and fill in metadata (steps, handrail, hours, status)</string>
+   </property>
+  </action>
+  <action name="actionNodeGenerator">
+   <property name="icon">
+    <iconset resource="../icons.qrc">
+     <normaloff>:/CC/images/ccPointListPicking.png</normaloff>:/CC/images/ccPointListPicking.png</iconset>
+   </property>
+   <property name="text">
+    <string>Node Generator (F3)</string>
+   </property>
+   <property name="statusTip">
+    <string>BatGraph F3 — generate standard station node/edge topology from station parameters</string>
    </property>
   </action>
   <action name="actionCurvature">
