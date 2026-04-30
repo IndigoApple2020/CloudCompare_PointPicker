@@ -73,19 +73,18 @@ Stage 4 │ Graph Building           → Draw edges between nodes
         │  / Graph Editor]
         │
 Stage 5 │ Node Assignment          → Assign names to unlabelled nodes
-        │ [BatGraph: Node Stepper]    🔲 Planned (variant of Stage 3 for
-        │                               scratch-built graphs)
+        │ [BatGraph: Node Stepper]    ✅ Built (F5)
         │
 Stage 6 │ Edge Metrics             → Auto-compute distance, slope, bearing
-        │ [BatGraph: Distance &       🔲 Planned
+        │ [BatGraph: Distance &       ✅ Built (F6)
         │  Slope Calculator]
         │
 Stage 7 │ Metadata Entry           → Add steps, handrail, opening hours
-        │ [BatGraph: Metadata         🔲 Planned
+        │ [BatGraph: Metadata         ✅ Built (F7)
         │  Stepper]
         │
 Stage 8 │ Graph Review             → View, inspect, validate graph
-        │ [BatGraph: Graph Viewer]    🔲 Planned
+        │ [BatGraph: Graph Viewer]    🔨 In Progress (F8a read-only viewer)
         │
 Stage 9 │ TfL Enrichment           → ATCO codes, journey times,
         │ (Python scripts)            accessibility, lift IDs
@@ -98,7 +97,7 @@ Stage 11│ GTFS-Pathways Check      → Validate output against standard
         │ (Python script — to build)  gtfs_compliance_report.txt
 ```
 
-**Current state:** Stage 3 (F1) is fully built — all four implementation phases merged to `master`. Stage 2 (F2 Merge All Visible) is in progress. Stages 4–8 are done externally in Graph Commons and Python scripts. The development roadmap (Section 4) describes how each is being brought into BatGraph.
+**Current state:** Stages 3, 5, 6, 7 are fully built (F1, F5, F6, F7 merged to `master`). Stage 2 (F2 Merge All Visible) is built. Stage 8 (F8a read-only graph viewer) is in progress on `feature/f8a-graph-panel`. Stage 4 (Graph Creator/Editor) is still done externally in Graph Commons. The development roadmap (Section 4) describes how each stage is being brought into BatGraph.
 
 ---
 
@@ -131,9 +130,9 @@ This section describes each new feature to be built into the CloudCompare_PointP
 
 ---
 
-### F2 — Merge All Visible Clouds 🔨 In Progress
+### F2 — Merge All Visible Clouds ✅ Built
 
-**Status:** `Edit → Merge` (select-then-merge) is already available in CloudCompare core. The new *"Merge all visible"* one-click action is being added in branch `feature/f2-merge-all-visible`.
+**Status:** Merged to `master` (PR #9). `Edit → Merge` (select-then-merge) was already available in CloudCompare core. The new *"Merge all visible"* one-click action has been added.
 
 **What it does:** A single toolbar/menu action that:
 1. Collects all visible, enabled `ccPointCloud` entities from the DB tree automatically
@@ -212,7 +211,7 @@ When triggered by right-clicking a node:
 
 ---
 
-### F5 — Node Stepper 🔨 In Progress
+### F5 — Node Stepper ✅ Built
 
 **Replaces:** Manual labelling workflow when building a graph from scratch (Graph Creator output)
 
@@ -237,7 +236,7 @@ In both modes the 3D view pans and zooms to keep the current node centred, and t
 
 ---
 
-### F6 — Distance & Slope Calculator 🔲 Planned
+### F6 — Distance & Slope Calculator ✅ Built
 
 **Replaces:** Python edge metrics script (currently ad-hoc, produces `edge_metrics_<stn>.csv`)
 
@@ -261,7 +260,7 @@ In both modes the 3D view pans and zooms to keep the current node centred, and t
 
 ---
 
-### F7 — Metadata Stepper 🔲 Planned
+### F7 — Metadata Stepper ✅ Built
 
 **Replaces:** Manual spreadsheet editing in `3_StepsInfo/`
 
@@ -282,17 +281,33 @@ In both modes the 3D view pans and zooms to keep the current node centred, and t
 
 ---
 
-### F8 — Graph Viewer 🔲 Planned
+### F8 — Graph Panel 🔨 In Progress
 
 **Replaces:** Graph Commons (visualisation)
 
-**What it does:**
-- Loads `nodes.csv` + `edges.csv` and renders the graph as a 3D overlay on the point cloud
-- Nodes shown as coloured spheres sized by type
-- Edges shown as coloured lines by edge type (see F4 colour scheme)
-- Click a node or edge to inspect its attributes in a panel
-- Pan, zoom, rotate in the same 3D view as the cloud
-- Toggle visibility of node/edge types independently
+**Design rationale:** A top-down real-coordinate projection is unusable for this graph — nodes at different underground depths (`.Base`, `.Con`, `.Top`) all share the same x/y and collapse onto each other. A full 3D overlay requires a separate render pass that is significantly more complex. Instead, F8 uses a **2D force-directed panel** (Fruchterman-Reingold layout), the same approach as Graph Commons, giving clear spatial separation while preserving topology.
+
+**F8a — Read-only viewer** 🔨 In Progress (`feature/f8a-graph-panel`)
+
+- Separate floating window (persistent — reopening raises the existing instance)
+- Loads `nodes.csv` + `edges.csv` via toolbar file pickers
+- Applies Fruchterman-Reingold layout (800×800 virtual space, k = √(area/N) × 1.5, 300 iterations, temperature cooling × 0.95/iteration)
+- Pannable / zoomable QGraphicsView (wheel-zoom anchored under mouse, left-drag pan)
+- **Node colours** by type: PlatformExit = black, Con/Base = grey, Top = purple, TrainFront = green, TrainRear = brown, JPL = orange, Exit = yellow
+- **Edge colours** by type: Path = cyan, Elev/STAIRS/lift = red, Float0 = grey dashed, JPL = blue, TempEdge = red dashed
+- **Unlabelled nodes** (empty label or `Point #…`) rendered as hollow dashed circles — visually flags zones needing assignment
+- Click any node or edge → inspector panel shows all CSV attributes
+- Re-layout button re-runs F-R; Fit view fits entire graph
+- Status bar shows node count, edge count, unlabelled count
+
+**F8b — Editing** 🔲 Planned
+
+- Drag nodes to reposition manually
+- Add / remove edges
+- Edit node and edge attributes inline
+- Save changes back to CSV
+
+**Future toggle:** 3D skeleton view overlaid on the point cloud (separate render pass)
 
 ---
 
@@ -606,26 +621,37 @@ CloudCompare_PointPicker/
 ├── qCC/
 │   ├── ccPointListPickingDlg.cpp    # F1 Node Name Labeller (✅ built)
 │   ├── ccPointListPickingDlg.h
+│   ├── ccNodeStepperDlg.cpp         # F5 Node Stepper (✅ built)
+│   ├── ccNodeStepperDlg.h
+│   ├── ccEdgeMetrics.cpp            # F6 Distance & Slope Calculator (✅ built)
+│   ├── ccEdgeMetrics.h
+│   ├── ccMetadataStepperDlg.cpp     # F7 Metadata Stepper (✅ built)
+│   ├── ccMetadataStepperDlg.h
+│   ├── ccGraphPanelDlg.cpp          # F8a Graph Panel viewer (🔨 in progress)
+│   ├── ccGraphPanelDlg.h
 │   ├── mainwindow.cpp               # Menu wiring, action handlers
 │   ├── mainwindow.h
 │   └── ui_templates/
 │       ├── pointListPickingDlg.ui   # F1 dialog UI
-│       └── mainWindow.ui            # Main menu (actionPointListPickingAllClouds added)
+│       ├── nodeStepperDlg.ui        # F5 dialog UI
+│       ├── metadataStepperDlg.ui    # F7 dialog UI
+│       ├── graphPanelDlg.ui         # F8 dialog UI
+│       └── mainWindow.ui            # Main menu (all BatGraph actions)
+├── scripts/
+│   └── windows/
+│       └── build_and_run.bat        # Build & deploy script (✅ built)
 └── docs/
     ├── BATGRAPH_ARCHITECTURE.md     # This document
     ├── BatGraph_Strategy.docx       # Product strategy
     └── POINT_PICKER_STRATEGY.md     # CloudCompare picking feature strategy
 ```
 
-**Planned new files (as features are built):**
+**Planned new files:**
 
 ```
 qCC/
-├── ccGraphViewerDlg.cpp/h           # F8 Graph Viewer
 ├── ccGraphEditorDlg.cpp/h           # F4 Graph Creator / Editor
-├── ccNodeStepperDlg.cpp/h           # F5 Node Stepper
-├── ccMetadataStepperDlg.cpp/h       # F7 Metadata Stepper
-└── ccGraphMetrics.cpp/h             # F6 Distance & Slope Calculator
+└── ccNodeGenerator.cpp/h            # F3 Node Generator from Excel
 ```
 
 ---
@@ -701,11 +727,12 @@ flowchart TB
 
     subgraph BatGraph["BatGraph (CloudCompare_PointPicker)"]
         F1["F1 Node Name Labeller ✅\nPick nodes on cloud\nAssign names from list"]
+        F2["F2 Merge All Visible ✅\nOne-click merge all visible clouds"]
         F4["F4 Graph Creator / Editor 🔲\nDraw & edit edges on 3D cloud"]
-        F5["F5 Node Stepper 🔲\nAssign names to unlabelled nodes"]
-        F6["F6 Distance & Slope Calc 🔲\nAuto-compute metrics per edge"]
-        F7["F7 Metadata Stepper 🔲\nFill steps, handrail, hours"]
-        F8["F8 Graph Viewer 🔲\nVisualise graph on 3D cloud"]
+        F5["F5 Node Stepper ✅\nAssign names to unlabelled nodes"]
+        F6["F6 Distance & Slope Calc ✅\nAuto-compute metrics per edge"]
+        F7["F7 Metadata Stepper ✅\nFill steps, handrail, hours"]
+        F8["F8 Graph Panel 🔨\n2D force-directed viewer\nclick-to-inspect"]
     end
 
     subgraph Interim["Interim External Tools (being retired)"]
@@ -736,7 +763,7 @@ flowchart TB
         Builder["NetworkBuilder → Compiled Graph"]
     end
 
-    Scan --> Prep --> F1
+    Scan --> Prep --> F2 --> F1
     F1 --> F4 & GC
     F4 --> F5 --> F6 --> F7 --> F8
     GC --> PyMetrics --> ManualMeta
